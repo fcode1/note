@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>数组/字符串--去重</title>
+</head>
+
+<body>
+    <script>
+        // var arr = [1, 1, 1, 2, 2, 4, 4, 4, 2, 3, 3, 3];
+
+
+
+        var arr = ['abcd', 'hhh', 'hhh', 'qwe', 'qwe', '123', '123', 123];
+
+        //--------------------------------------------------------------------------对象赋值比较
+        Array.prototype.unique = function() {
+            //hash方法去重--->对象有同值属性，但没有同名属性，将数组的每个元素作为temp对象属性名，并赋一个值，
+            // 数组中相同的元素就会是相同的属性名，就不会再次出现
+            var itemIndex = {},
+                arr = [],
+                len = this.length;
+            // for (var i = 0; i < len; i++) { //循环，谁调用的这个方法谁就是这个数组
+            //     if (!itemIndex[this[i]]) { //取每个元素的值，因为需要操作的是undefined值，所以取!
+            //         itemIndex[this[i]] = "abc"; //自定义属性,给每个进来的属性加一个值，在有同样的值的属性就不在操作
+            //         arr.push(this[i]);
+            //     }
+            // }
+            this.forEach(item => {
+                if (!itemIndex[item]) {
+                    itemIndex[item] = 1;
+                    arr.push(item);
+                }
+            });
+            return arr;
+        }
+        console.log(arr.unique())
+
+        // ES6 Map方法----对象赋值比较---------------------------------------------------------------------------
+        Array.prototype.unique0 = function() {
+            let newArr = new Map();
+            let arr = [];
+            this.forEach(item => {
+                if (!newArr.has(item)) {
+                    newArr.set(item, 1);
+                    arr.push(item);
+                }
+            })
+            return arr;
+        }
+        console.log(arr.unique0())
+            //----------------------------------------------------------------------通过索引值
+        function unique1(arr) {
+            var newArr = [];
+            var len = arr.length;
+            for (var i = 0; i < len; i++) {
+                if (newArr.indexOf(arr[i]) == -1) { //==-1说明新数组没有，所以添加
+                    newArr.push(arr[i]);
+                }
+            }
+            return newArr;
+        }
+        console.log(unique1(arr));
+        //---------------------------------------------------------------两次for循环比较
+
+        function unique2(arr) {
+            var newArr = [];
+            var len = arr.length;
+            for (var i = 0; i < len; i++) {
+                for (var j = i + 1; j < len; j++) {
+                    if (arr[i] === arr[j]) { //相等不做任何操作，跳出第二个for循环，只有不相等才push到新数组
+                        j = ++i;
+                    }
+                }
+                newArr.push(arr[i]); //只有不相等才push到新数组
+            }
+            return newArr;
+        }
+        console.log(unique2(arr));
+
+        //----------------------------------------------------------------------------按顺序比较
+        function unique3(arr) {
+            arr.sort();
+            var newArr = [arr[0]];
+            var len = arr.length;
+            for (var i = 0; i < len; i++) {
+                if (arr[i] !== newArr[newArr.length - 1]) {
+                    newArr.push(arr[i]);
+                }
+            }
+            return newArr;
+        }
+        console.log(unique3(arr));
+    </script>
+</body>
+
+</html>
