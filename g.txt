@@ -1,0 +1,28 @@
+git init   初始化本地仓库
+git config --list  查看当前配置信息
+git config --global user.name '****'
+git config --global user.email '****'
+
+
+git remote add origin '地址'
+$ git clone ‘地址’
+
+git branch name 创建新分支
+git checkout name 进入分支
+git branch -d name 删除分支
+
+git tag v1.0 打标签版本
+
+
+
+git remote 查看源
+mkdir name 创建文件夹
+
+notepad name.txt 调用记事本创建文件 
+
+
+git status 查看状态
+git add .全部添加
+git commit  -m 
+
+git push origin master 将文件给推到服务器上 
