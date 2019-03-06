@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        /* div {
+            border: 1px solid #000;
+        } */
+        
+        #wrapper div {
+            width: 150px;
+            height: 150px;
+            border: 1px solid #000;
+            display: none;
+        }
+        
+        .active {
+            background: greenyellow;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="wrapper">
+
+        <section>
+            <input class="active" type="button" value="1111">
+            <input type="button" value="2222">
+            <input type="button" value="3333">
+        </section>
+
+        <div style="display:block;">11</div>
+        <div>22</div>
+        <div>3333</div>
+    </div>
+
+    <script>
+        var wrap = document.getElementById('wrapper');
+        var inp = wrap.getElementsByTagName('input');
+        var showDiv = wrap.getElementsByTagName('div')
+
+
+        for (var i = 0; i < inp.length; i++) {
+            (function(n) {
+                inp[i].onclick = function() {
+                    for (var i = 0; i < inp.length; i++) {
+                        inp[i].className = '';
+                        showDiv[i].style.display = 'none';
+                    }
+                    this.className = 'active';
+                    showDiv[n].style.display = 'block';
+                }
+            }(i))
+        }
+
+        // for (var i = 0; i < inp.length; i++) {
+        //     inp[i].index = i;
+        //     inp[i].onclick = function() {
+        //         for (var i = 0; i < inp.length; i++) {
+        //             inp[i].className = '';
+        //             showDiv[i].style.display = 'none';
+        //         }
+        //         this.className = 'active';
+        //         showDiv[this.index].style.display = 'block';
+        //     }
+        // }
+    </script>
+</body>
+
+</html>

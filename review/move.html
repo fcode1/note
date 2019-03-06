@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>move</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        
+        #wraper {
+            position: absolute;
+            left: -100px;
+            width: 100px;
+            height: 200px;
+            background: #ccc;
+        }
+        
+        #wraper span {
+            position: absolute;
+            top: 60px;
+            right: -20px;
+            width: 20px;
+            height: 60px;
+            line-height: 20px;
+            background: #248de4;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="wraper">
+        <span>分享到</span>
+    </div>
+    <script>
+        function start() {
+            var oDiv = document.getElementById('wraper');
+            oDiv.onmouseover = function() {
+                move(10, 0);
+            }
+            oDiv.onmouseout = function() {
+                move(-10, -100);
+            }
+        }
+        start();
+
+
+        var timer = null;
+
+        function move(speed, target) {
+            var div = document.getElementById('wraper');
+            clearInterval(timer);
+            timer = setInterval(function() {
+                if (div.offsetLeft == target) {
+                    clearInterval(timer);
+                } else {
+                    div.style.left = div.offsetLeft + speed + 'px';
+                }
+            }, 30)
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>事件委托-冒泡</title>
+</head>
+
+<body>
+    <ul id="con">
+        <li>1</li>
+        <li>2</li>
+        <li>3</li>
+        <li>4</li>
+        <li>5</li>
+        <li>6</li>
+        <li>7</li>
+        <li>8</li>
+        <li>9</li>
+        <li>10</li>
+    </ul>
+    <div style="background-color:red;margin:0 0 100px 0;">123</div>
+    <div style="background-color:red;margin:200px 0 0 0;">234</div>
+    <script>
+        var con = document.getElementById('con');
+
+        con.addEventListener('click', function(e) {
+            var event = e || window.event;
+            var target = event.target || event.srcElement;
+            console.log(target.innerText);
+        }, false)
+
+        // function getStyle(elem, prop) {
+        //     if (window.getComputedStyle) {
+        //         return window.getComputedStyle(elem, null)[prop]; //null--可以获取伪元素的样式
+        //     } else {
+        //         return elem.currentStyle[prop]; //兼容ie
+        //     }
+        // }
+    </script>
+</body>
+
+</html>

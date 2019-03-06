@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        var desc = 'first'
+        var obj = {
+            desc: 'hello',
+            info: {
+                desc: 'world',
+                log: function() {
+                    console.log(this.desc)
+                }
+            }
+        }
+        obj.info.log()
+        f1 = obj.info.log
+        f1()
+    </script>
+</body>
+
+</html>

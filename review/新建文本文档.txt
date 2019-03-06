@@ -1,0 +1,22 @@
+"background.customImages": [
+        "file:///D:/Microsoft VS Code/pic/1.png",
+        "file:///D:/Microsoft VS Code/pic/3.png",
+        "file:///D:/Microsoft VS Code/pic/2.png"
+    ],
+    "background.style": {
+        "content": "''",
+        "pointer-events": "none",
+        "position": "absolute",
+        "z-index": "99999",
+        "width": "100%",
+        "height": "100%",
+        "background-position": "100% 100%",
+        "background-repeat": "no-repeat",
+        "opacity": 0.7
+    },
+    "background.useDefault": false,
+
+
+以管理员身份运行cmd后，在cmd命令窗口中执行：hdwwiz C:\windows\system32>hdwwiz
+——由此进入“添加硬件向导”界面。
+——然后，就可以添加过时硬件了。

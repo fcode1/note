@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="https://unpkg.com/vue@2.5.16/dist/vue.js"></script>
+    <style>
+        .on {
+            background: rgb(84, 228, 108);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <input v-for="item,i in tabList" v-bind:value="item.title" :class="{on:i===index}" @click="tabHandle(i)" type="button">
+        <div v-for="item,j in tabList" v-bind:style="{display:j===index?'block':'none'}">
+            <p v-for="opation in item.list">{{opation.content}}</p>
+        </div>
+    </div>
+
+    <script>
+        let tabList = [{
+            title: '新闻',
+            list: [{
+                content: '20180611'
+            }, {
+                content: '开会'
+            }]
+        }, {
+            title: '娱乐',
+            list: [{
+                content: '新品发布会'
+            }]
+        }, {
+            title: '体育',
+            list: [{
+                content: '取得冠军'
+            }, {
+                content: '2018夺冠'
+            }]
+        }]
+
+        new Vue({
+            el: '#app',
+            data: {
+                tabList,
+                index: 0
+            },
+            methods: {
+                tabHandle(i) {
+                    this.index = i
+                }
+            }
+        })
+    </script>
+
+
+</body>
+
+</html>
