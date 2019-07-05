@@ -972,3 +972,205 @@ const  mapStateToProps = (state) =>({//store中的state-->将store中的state转
 export default connect(mapStateToProps,action)(Counter);
 ```
 
+### 10.axios
+
+安装：npm install axios --save / yarn add axios
+
+请求接口数据，在componentDidMount中。`这个方法获取数据时比较麻烦，本质上是redux在获取数据，但是需要通过react进行获取，然后在一步步推送到reducer中，-->接下来可以通过redux-thunk中间件直接获取`
+
+```javascript
+import React, { Component } from 'react';
+import store from '../store'
+import {CHANGE_INPUT_VAL,ADD_TODO_ITEM,DELETE_TODO_ITEM} from '../store/action';
+import * as action from '../store/actionCreators'
+import {connect} from 'react-redux';
+import axios from 'axios';
+
+axios.interceptors.response.use(res =>{
+  if(res.data.code === 0){
+    return res.data.data;
+  }
+  return Promise.reject('请求出错');
+})
+
+class TodoList extends Component {
+
+  componentDidMount () {
+    axios.get('./list.json').then(res =>{
+      this.props.getInitList(res);//触发dispatch
+    })
+  }
+
+  render () {
+    const {inpVal,list} = this.props;
+    return (
+      <>
+        <div>
+          <input value={inpVal} onChange={this.handleChange}></input>
+          <button onClick={this.handleAdd}>添加</button>
+        </div>
+        <div>
+          <ul>
+            {
+              list.map((item,index)=>(
+                <li key={item+index}>
+                  {item}<button onClick={()=>{this.handleDelete(index)}}>X</button>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </>
+    )
+  }
+  handleChange=(e)=>{
+    this.props.changeVal(e.target.value)
+  }
+
+  handleAdd=()=>{
+    this.props.addItem(this.props.inpVal)
+  }
+
+  handleDelete=(index)=>{
+    this.props.deleteItem(index)
+  }
+
+  handleStoreChange=()=>{  //更新数据函数，在subscribe中订阅
+    this.setState(store.getState())
+  }
+
+}
+  const mapStateToProps = (state) => ({
+    inpVal:state.inpVal,
+    list:state.list
+  })
+
+export default connect(mapStateToProps, action)(TodoList);
+
+```
+
+利用axios提前对请求的数据进行过滤
+
+```javascript
+axios.interceptors.response.use(res =>{
+  if(res.data.code === 0){
+    return res.data.data;
+  }
+  return Promise.reject('请求出错');
+})
+```
+
+#### 10.1 redux-thunk中间件
+
+- 可以直接在action中进行数据请求-->axios.get()
+
+1.安装：npm install redux-thunk --save / yarn add redux-thunk
+
+2.在store文件中引入，thunk需要借助redux中的applyMiddleware组件包裹使用，并将applyMiddleware(thunk)传入到createStore内作为第二个参数
+
+~~~javascript
+import { createStore, applyMiddleware } from 'redux';
+import reducer from './reducer';
+import thunk from 'redux-thunk';
+
+const store = createStore(
+  reducer,
+  applyMiddleware(thunk)
+  // window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+  )
+
+export default store;
+~~~
+
+3.actionCreators中直接发起axios.get()请求，不用在componentDidMount()进行请求了，只需要执行以下函数即可
+
+~~~javascript
+export const getInitList = (list) =>{
+  // return {
+  //   type:Types.GET_INIT_LIST,
+  //   list
+  // }
+
+  return dispatch => {
+    Axios.get('list.json').then(res =>{
+      dispatch({
+        type:Types.GET_INIT_LIST,
+        list:res
+      })
+    })
+  }
+}
+~~~
+
+~~~javascript
+ componentDidMount () {
+    this.props.getInitList();
+     
+    // axios.get('./list.json').then(res =>{
+    //   this.props.getInitList(res);
+    // })
+  }
+~~~
+
+#### 10.2 redux-promise 
+
+- 在action中进行异步请求数据
+
+1.安装：yarn add redux-promise
+
+2.使用引入、包裹
+
+~~~javascript
+import promise from 'redux-promise';
+
+const store = createStore(
+  reducer,
+  applyMiddleware(thunk,promise)
+  )
+
+export default store;
+~~~
+
+3.actionCreators中发起axios.get()请求
+
+~~~javascript
+
+~~~
+
+#### 10.3 redux-logger
+
+- 可以打印请求前与请求后的state变化
+
+  1.安装：yarn add redux-logger
+
+  2.使用：直接引入包裹使用
+
+  ~~~javascript
+  import logger from 'redux-logger';
+  
+  const store = createStore(
+    reducer,
+    applyMiddleware(thunk,promise,logger)
+  ~~~
+
+#### 10.4使用中间件时继续使用Redux调试工具
+
+在redux中引入compose组件，并定义composeEnhancers，最后在createStore中包裹使用composeEnhancers（）
+
+~~~javascript
+import { createStore, applyMiddleware ,compose} from 'redux';
+import reducer from './reducer';
+import thunk from 'redux-thunk';
+import promise from 'redux-promise';
+import logger from 'redux-logger';
+
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__|| compose;
+
+const store = createStore(
+  reducer,
+  composeEnhancers(applyMiddleware(thunk,promise,logger))
+  )
+
+export default store;
+~~~
+
