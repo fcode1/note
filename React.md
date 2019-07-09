@@ -332,7 +332,7 @@ export default LifeCycle;
 
 1. 安装路由：cnpm install react-router-dom
 
-2. HashRouter(带#的哈希路由) 和 BrowserRouter(浏览器路由)
+2. HashRouter(在浏览器路径上带#的哈希路由) 和 BrowserRouter(浏览器路由)
 
 3. index.js的配置
 
@@ -347,7 +347,7 @@ export default LifeCycle;
       Switch,//暂停向下匹配路由,配合exact使用-》严格匹配，包含的就不会在匹配，除非完全包含
       Redirect,//重定向
       Link,//路由跳转
-      NavLink,//带样式的路由跳转
+      NavLink,//带样式的路由跳转，选中时会带有class属性
      } from 'react-router-dom';
    import Home from './pages/Home';
    import Activities from './pages/Activities';
@@ -357,15 +357,15 @@ export default LifeCycle;
    
    ReactDOM.render(
      <Router>
-       <>
+       <>//可以单独抽离出去，写一个组件
          <div className="nav">
-           <NavLink to='/' exact>首页</NavLink>
+           <NavLink to='/' exact>首页</NavLink> ///配合exact可以避免同时出现选中时的class属性
            <NavLink to='/activities'>动态</NavLink>
            <NavLink to='/topics'>话题</NavLink>
            <NavLink to='/login'>登录</NavLink>
          </div>
          <div className="content">
-           <Switch>
+           <Switch>//匹配到了就停止向下匹配
              <Route path = '/' exact component = { Home }></Route>
              <Route path = '/activities' component = {Activities}></Route>
              <Route path = '/topics' component = {Topics}></Route>
@@ -986,7 +986,7 @@ import * as action from '../store/actionCreators'
 import {connect} from 'react-redux';
 import axios from 'axios';
 
-axios.interceptors.response.use(res =>{
+axios.interceptors.response.use(res =>{//过滤请求数据
   if(res.data.code === 0){
     return res.data.data;
   }
@@ -1082,7 +1082,7 @@ const store = createStore(
 export default store;
 ~~~
 
-3.actionCreators中直接发起axios.get()请求，不用在componentDidMount()进行请求了，只需要执行以下函数即可
+3.actionCreators中直接发起axios.get()请求。不用在componentDidMount()进行请求了，只需要执行一下函数即可
 
 ~~~javascript
 export const getInitList = (list) =>{
@@ -1134,7 +1134,15 @@ export default store;
 3.actionCreators中发起axios.get()请求
 
 ~~~javascript
-
+//redux-promise方法
+  return new Promise((resolve,reject) => {
+    Axios.get('list.json').then(res =>{
+      resolve({
+        type:Types.GET_INIT_LIST,
+        list:res
+      })
+    })
+  })
 ~~~
 
 #### 10.3 redux-logger
@@ -1172,5 +1180,69 @@ const store = createStore(
   )
 
 export default store;
+~~~
+
+#### 10.5 redux-saga
+
+作用同redux-thunk差不多，皆为异步请求数据进行处理。
+
+1.安装：yarn add redux-saga / npm install redux-saga --save
+
+2.在store中使用时，需要引入createSagaMiddleware 组件，并定义sagaMiddleware 等于createSagaMiddleware ()。 在createStore中使用时同样借助applyMiddleware 组件包裹，最后需要执行一下run()函数，run函数中的参数便是sagas.js文件。
+
+~~~javascript
+import { createStore, applyMiddleware } from 'redux';
+import createSagaMiddleware from 'redux-saga';
+
+const sagaMiddleware = createSagaMiddleware();
+
+const store = createStore(
+  reducer,
+  applyMiddleware(sagaMiddleware)
+  )
+
+sagaMiddleware.run(mySaga);
+~~~
+
+3.创建sagas.js文件，不同于thunk，异步处理数据不需要在action中进行，在sagas.js中即可
+
+~~~javascript
+import { takeEvery, put} from 'redux-saga/effects';
+import * as Types from './action';
+import axios from 'axios';
+import * as actions from './actionCreators'  ;
+
+function* mySaga () {
+  yield takeEvery(Types.GET_TODO_DATA, getTodoData)//两个参数，第一个是要触发的类型，第二个是要执行的函数
+  yield takeEvery(Types.ADD_TODO_ITEM, addItem)
+}
+
+function* addItem () {
+  console.log('add')
+}
+
+function* getTodoData () {
+  try {//做一步请求失败的处理
+    const data = yield axios.get('list.json');
+    // console.log(data.data.data)
+    const action = actions.getInitList(data);
+    yield put(action);//相当于dispatch派发
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+export default mySaga;
+~~~
+
+同样 组件中 只需要在componentDidMount中执行一下sagas.js中派发的函数即可
+
+~~~javascript
+  componentDidMount(){
+    this.props.getTodoData();
+    // axios.get('./list.json').then(res =>{
+    //   this.props.getInitList(res);
+    // })
+  }
 ~~~
 
