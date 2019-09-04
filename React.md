@@ -553,7 +553,7 @@ class Nav extends Component {
 
 npm install redux --save
 
-1.创建store文件，引用createStore组件
+1.创建store文件，引用createStore组件，store内包含reducer，reducer接收action请求，进行处理，并返回新的state。
 
 ```javascript
 import { createStore } from 'redux';
@@ -567,7 +567,7 @@ const store = createStore(
 export default store;
 ```
 
-2.创建reducer文件
+2.创建reducer文件,store内包含reducer，reducer接收action请求，进行处理，并返回新的state。
 
 ```javascript
 const initState ={
@@ -609,7 +609,7 @@ class TodoList extends Component {
 }
 ```
 
-2.当组件要进行更改数据时，首先要执行 action方法，传入对应的类型与修改内容，然后再触发 store.dispatch（）方法
+2.当组件要进行更改数据时，首先要执行 action方法，传入对应的类型与修改内容，然后再触发 store.dispatch（）方法，将action发送到 reducer中
 
 ```javascript
 handleChange = (e) =>{
@@ -806,6 +806,9 @@ render(
 #### 9.2 connect
 
 connect方法用于连接，对组件进行包装，替代store.getState() 与 store.subscribe()
+
+- **mapStateToProps----将store中的state转变到props中**
+- **mapDispatchToProps----store中的dispatch**
 
 Exp1:
 
